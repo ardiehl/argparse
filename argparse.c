@@ -24,8 +24,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-Dec 20, 2021 Armin:
- initial version
+Dec 20, 2021 Armin: initial version
+Dec 23, 2021 Armin: fixed memory leak when reading options from config file
 */
 
 #include <stdio.h>
@@ -273,6 +273,7 @@ int argParseArg (argParse_handleT *a, char *arg) {
 
 	if (*p == 0) return 0;
 	a->shortOption = -1;
+	if (a->longOption) fprintf(stderr,"argParseArg, possible memory leak, a->longOption\n");
 	free (a->longOption);
 	a->longOption = NULL;
 	if (*p == '-') {
@@ -299,11 +300,15 @@ int argParseArg (argParse_handleT *a, char *arg) {
 					a->shortOption = a->options[a->optIndex].shortOption;
 					if ((hasOpt) && (a->options[a->optIndex].argRequired == ARG_NO)) {
 						fprintf(stderr,"%s: Option --%s does not require an argument\n",a->progName,a->longOption);
+						free(a->longOption); a->longOption = NULL;
 						return -1;
 					}
-					return argParse_handleValue (a, p, &a->options[a->optIndex]);
+					rc = argParse_handleValue (a, p, &a->options[a->optIndex]);
+					free(a->longOption); a->longOption = NULL;
+					return rc;
 				}
 			fprintf(stderr,"%s: Invalid option --%s\n",a->progName,a->longOption);
+			free(a->longOption); a->longOption = NULL;
 			return -1;
 
 		} else {			// short option
@@ -354,8 +359,13 @@ int argParseArg (argParse_handleT *a, char *arg) {
 				a->shortOption = a->options[i].shortOption;
 				break;
 			}
-		if (a->optIndex >= 0) return argParse_handleValue (a, p, &a->options[a->optIndex]);
+		if (a->optIndex >= 0) {
+			rc = argParse_handleValue (a, p, &a->options[a->optIndex]);
+			free(a->longOption); a->longOption = NULL;
+			return rc;
+		}
 		fprintf(stderr,"%s: Invalid option '%s' in line %d of %s\n",a->progName,a->longOption,a->lineNum,a->confFileName);
+		free(a->longOption); a->longOption = NULL;
 		return -1;
 	}
 	// we have an additional argument without -

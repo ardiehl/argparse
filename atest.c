@@ -22,14 +22,15 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-Dec 20, 2021 Armin:
- initial version
+Dec 20, 2021 Armin: initial version
+Dec 23, 2021 Armin: fixed memory leak
 */
 
 
 #include <stdio.h>
 #include "argparse.h"
 #include <string.h>
+#include <stdlib.h>
 
 char * strArg;
 int intArg1;
@@ -72,5 +73,6 @@ int main(int argc, char *argv[]) {
 			printf("\n");
 		}
 	}
-
+	argParse_free (a);
+	free(strArg);
 }
