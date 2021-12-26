@@ -35,7 +35,7 @@ Dec 23, 2021 Armin: fixed memory leak
 char * strArg;
 int intArg1;
 int intArg2;
-int intArgC;
+int intArgC = 2;
 int intFlag;
 int intValue;
 
@@ -48,17 +48,21 @@ int callback(argParse_handleT *a, char * arg) {
 
 AP_START(argopt)
 	AP_HELP
-	AP_OPT_INTVAL     ('v',"value" ,&intValue  ,"integer value")
-	AP_OPT_INTVALF    ('f',"flag"  ,&intFlag   ,"flag, multiple times to increment -f- to decrement")
-	AP_OPT_STRVAL     ('s',"str"   ,&strArg    ,"set string")
-	AP_OPT_INTVAL     ('i', "int"  ,&intArg1   ,"set int")
-	AP_OPT_INTVALFO   ('I',"int2"  ,&intArg2   , "increment or set int")
-	AP_OPT_INTVAL_CB  ('c', "intc" ,&intArgC   ,"set int with callback", &callback)
+	AP_OPT_INTVAL     (1,'v',"value" ,&intValue  ,"integer value")
+	AP_OPT_INTVALF    (0,'f',"flag"  ,&intFlag   ,"flag, multiple times to increment -f- to decrement")
+	AP_OPT_STRVAL     (1,'s',"str"   ,&strArg    ,"set string")
+	AP_OPT_INTVAL     (0,'i', "int"  ,&intArg1   ,"set int")
+	AP_OPT_INTVALFO   (0,'I',"int2"  ,&intArg2   , "increment or set int")
+	AP_OPT_INTVAL_CB  (1,'c', "intc" ,&intArgC   ,"set int with callback", &callback)
+	//AP_OPT_INTVAL_CB  (1,'c', NULL ,&intArgC   ,"set int with callback", &callback)
+	//AP_OPT_INTVAL     (0,0, "int"  ,&intArg1   ,"set int")
+	//AP_OPT_INTVALFO   (0,0,"int2"  ,&intArg2   , "increment or set int")
 AP_END;
 
 int main(int argc, char *argv[]) {
 	int rc;
 	argParse_handleT *a;
+	strArg = strdup("strDefVal");
 
 	a = argParse_init(argopt, "atest.conf", "\natest is a simple test for argparse\n","\nafter parsing, the parsed args will be shown\n");
 	rc = argParse (a, argc, argv, 1);

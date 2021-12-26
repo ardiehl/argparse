@@ -48,18 +48,19 @@ Dec 20, 2021 Armin:
      |----------------   OPT option is optional
                          REQ required option
   Parameter
-    1:	short option char or index (>255) (int or char) (0..32 or >255 will not be shown as a short option but can be used in callbacks for long options)
-    2:	long option, can be NULL
-    3:	Pointer to int or string
+    1:  1=show default value (or value from config file) value in help
+    2:	short option char or index (>255) (int or char) (0..32 or >255 will not be shown as a short option but can be used in callbacks for long options)
+    3:	long option, can be NULL
+    4:	Pointer to int or string
 		if not NULL int or string will be set. Strings will be malloc'd or free'd if there is a value already
 		NULL only makes sense if no callback is specified
-	4:	Text that will he shown in help, can be NULL
+	5:	Text that will he shown in help, can be NULL
 
 	example:
 	AP_START(options)
-		AP_REQ_STRVAL   ('h',"hostname",&hostname      ,"hostname to connect to")
-		AP_OPT_INTVAL   ('p',"port"    ,&port          ,"port to use when connecting to hostname")
-		AP_OPT_INTVALFO ('v',"verbose" ,&verboseLevel  ,"increment or set verbosity level")
+		AP_REQ_STRVAL   (1,'h',"hostname",&hostname      ,"hostname to connect to")
+		AP_OPT_INTVAL   (1,'p',"port"    ,&port          ,"port to use when connecting to hostname")
+		AP_OPT_INTVALFO (0,'v',"verbose" ,&verboseLevel  ,"increment or set verbosity level")
 	EP_END;
 
  */
@@ -69,27 +70,27 @@ Dec 20, 2021 Armin:
 #endif
 
 
-#define AP_OPT_INTVAL(short,long,intPtr,help) { OPT_OPT, short, long, ARG_REQ, ARGTYPE_INT, intPtr, NULL, NULL, help },
-#define AP_REQ_INTVAL(short,long,intPtr,help) { OPT_REQ, short, long, ARG_REQ, ARGTYPE_INT, intPtr, NULL, NULL, help },
-#define AP_OPT_INTVALF(short,long,intPtr,help) { OPT_OPT, short, long, ARG_NO, ARGTYPE_INT, intPtr, NULL, NULL, help },
-#define AP_REQ_INTVALF(short,long,intPtr,help) { OPT_REQ, short, long, ARG_NO, ARGTYPE_INT, intPtr, NULL, NULL, help },
-#define AP_OPT_INTVALFO(short,long,intPtr,help) { OPT_OPT, short, long, ARG_OPT, ARGTYPE_INT, intPtr, NULL, NULL, help },
-#define AP_REQ_INTVALFO(short,long,intPtr,help) { OPT_REQ, short, long, ARG_OPT, ARGTYPE_INT, intPtr, NULL, NULL, help },
-#define AP_OPT_STRVAL(short,long,strPtr,help) { OPT_OPT, short, long, ARG_REQ, ARGTYPE_STR, NULL, strPtr, NULL, help },
-#define AP_REQ_STRVAL(short,long,strPtr,help) { OPT_REQ, short, long, ARG_REQ, ARGTYPE_STR, NULL, strPtr, NULL, help },
+#define AP_OPT_INTVAL(shval,short,long,intPtr,help) { shval, OPT_OPT, short, long, ARG_REQ, ARGTYPE_INT, intPtr, NULL, NULL, help },
+#define AP_REQ_INTVAL(shval,short,long,intPtr,help) { shval, OPT_REQ, short, long, ARG_REQ, ARGTYPE_INT, intPtr, NULL, NULL, help },
+#define AP_OPT_INTVALF(shval,short,long,intPtr,help) { shval, OPT_OPT, short, long, ARG_NO, ARGTYPE_INT, intPtr, NULL, NULL, help },
+#define AP_REQ_INTVALF(shval,short,long,intPtr,help) { shval, OPT_REQ, short, long, ARG_NO, ARGTYPE_INT, intPtr, NULL, NULL, help },
+#define AP_OPT_INTVALFO(shval,short,long,intPtr,help) { shval, OPT_OPT, short, long, ARG_OPT, ARGTYPE_INT, intPtr, NULL, NULL, help },
+#define AP_REQ_INTVALFO(shval,short,long,intPtr,help) { shval, OPT_REQ, short, long, ARG_OPT, ARGTYPE_INT, intPtr, NULL, NULL, help },
+#define AP_OPT_STRVAL(shval,short,long,strPtr,help) { shval, OPT_OPT, short, long, ARG_REQ, ARGTYPE_STR, NULL, strPtr, NULL, help },
+#define AP_REQ_STRVAL(shval,short,long,strPtr,help) { shval, OPT_REQ, short, long, ARG_REQ, ARGTYPE_STR, NULL, strPtr, NULL, help },
 
-#define AP_OPT_INTVAL_CB(short,long,intPtr,help,cb) { OPT_OPT, short, long, ARG_REQ, ARGTYPE_INT, intPtr, NULL, cb, help },
-#define AP_REQ_INTVAL_CB(short,long,intPtr,help,cb) { OPT_REQ, short, long, ARG_REQ, ARGTYPE_INT, intPtr, NULL, cb, help },
-#define AP_OPT_INTVALF_CB(short,long,intPtr,help,cb) { OPT_OPT, short, long, ARG_NO, ARGTYPE_INT, intPtr, NULL, cb, help },
-#define AP_REQ_INTVALF_CB(short,long,intPtr,help,cb) { OPT_REQ, short, long, ARG_NO, ARGTYPE_INT, intPtr, NULL, cb, help },
-#define AP_OPT_INTVALFO_CB(short,long,intPtr,help,cb) { OPT_OPT, short, long, ARG_OPT, ARGTYPE_INT, intPtr, NULL, cb, help },
-#define AP_REQ_INTVALFO_CB(short,long,intPtr,help,cb) { OPT_REQ, short, long, ARG_OPT, ARGTYPE_INT, intPtr, NULL, cb, help },
-#define AP_OPT_STRVAL_CB(short,long,strPtr,help,cb) { OPT_OPT, short, long, ARG_REQ, ARGTYPE_STR, NULL, strPtr, cb, help },
-#define AP_REQ_STRVAL_CB(short,long,strPtr,help,cb) { OPT_REQ, short, long, ARG_REQ, ARGTYPE_STR, NULL, strPtr, cb, help },
+#define AP_OPT_INTVAL_CB(shval,short,long,intPtr,help,cb) { shval, OPT_OPT, short, long, ARG_REQ, ARGTYPE_INT, intPtr, NULL, cb, help },
+#define AP_REQ_INTVAL_CB(shval,short,long,intPtr,help,cb) { shval, OPT_REQ, short, long, ARG_REQ, ARGTYPE_INT, intPtr, NULL, cb, help },
+#define AP_OPT_INTVALF_CB(shval,short,long,intPtr,help,cb) { shval, OPT_OPT, short, long, ARG_NO, ARGTYPE_INT, intPtr, NULL, cb, help },
+#define AP_REQ_INTVALF_CB(shval,short,long,intPtr,help,cb) { shval, OPT_REQ, short, long, ARG_NO, ARGTYPE_INT, intPtr, NULL, cb, help },
+#define AP_OPT_INTVALFO_CB(shval,short,long,intPtr,help,cb) { shval, OPT_OPT, short, long, ARG_OPT, ARGTYPE_INT, intPtr, NULL, cb, help },
+#define AP_REQ_INTVALFO_CB(shval,short,long,intPtr,help,cb) { shval, OPT_REQ, short, long, ARG_OPT, ARGTYPE_INT, intPtr, NULL, cb, help },
+#define AP_OPT_STRVAL_CB(shval,short,long,strPtr,help,cb) { shval, OPT_OPT, short, long, ARG_REQ, ARGTYPE_STR, NULL, strPtr, cb, help },
+#define AP_REQ_STRVAL_CB(shval,short,long,strPtr,help,cb) { shval, OPT_REQ, short, long, ARG_REQ, ARGTYPE_STR, NULL, strPtr, cb, help },
 
-#define AP_START(STRUCTNAME) static struct argParse_optionT STRUCTNAME[] = {
-#define AP_END { OPT_OPT, -1,NULL,ARG_NO,ARGTYPE_NONE,NULL,NULL,NULL }}
-#define AP_HELP { OPT_OPT, 'h', "help" , ARG_NO , ARGTYPE_NONE, NULL, NULL, &argParse_showHelp, "show this help and exit" },
+#define AP_START(STRUCTNAME) struct argParse_optionT STRUCTNAME[] = {
+#define AP_END { 0, OPT_OPT, -1,NULL,ARG_NO,ARGTYPE_NONE,NULL,NULL,NULL }}
+#define AP_HELP { 0, OPT_OPT, 'h', "help" , ARG_NO , ARGTYPE_NONE, NULL, NULL, &argParse_showHelp, "show this help and exit" },
 
 
 
@@ -133,6 +134,7 @@ typedef int argParse_callbackT(argParse_handleT *a, char * arg);
 
 
 struct argParse_optionT {
+	int showDefValue;
 	argParse_optT optReqired;	// required or optional option
 	int shortOption;			// short option if > ' ' && < 256 else index (-1 = end of list)
 	char *longOption;

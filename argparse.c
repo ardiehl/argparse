@@ -26,6 +26,7 @@ SOFTWARE.
 
 Dec 20, 2021 Armin: initial version
 Dec 23, 2021 Armin: fixed memory leak when reading options from config file
+Dec 26, 2021 Armin: Check for duplicate options
 */
 
 #include <stdio.h>
@@ -38,14 +39,14 @@ Dec 23, 2021 Armin: fixed memory leak when reading options from config file
 #define MAX_LINE_LEN 256
 
 argParse_handleT * argParse_init(const struct argParse_optionT *options, char *confFileName, char *helpTop, char *helpBottom) {
-	int i;
+	int i,j;
 	int size;
 	argParse_handleT *a = calloc(1,sizeof(argParse_handleT));
 	if (a) {
 		if (confFileName) a->confFileName = strdup(confFileName);
 		a->options = options;
-		a->helpTop = strdup(helpTop);
-		a->helpBottom = strdup(helpBottom);
+		if (helpTop) a->helpTop = strdup(helpTop);
+		if (helpBottom) a->helpBottom = strdup(helpBottom);
 
 		for (i=0;a->options[i].shortOption > -1; i++) {
 			a->numOptions++;
@@ -64,6 +65,28 @@ argParse_handleT * argParse_init(const struct argParse_optionT *options, char *c
 		}
 		a->optionsProcessed = calloc(a->numOptions,sizeof(int));
 	}
+
+	// check for duplicate options
+	for (i=0;i<a->numOptions;i++) {
+		if (options[i].shortOption > 0)
+			for (j=0;j<a->numOptions;j++) {
+				if (i != j)
+					if (options[i].shortOption == options[j].shortOption) {
+						fprintf(stderr,"duplicate short option, entry number %d, (%c %c) (%s %s)\n",i,options[i].shortOption,options[j].shortOption,options[i].longOption,options[j].longOption);
+						exit(1);
+					}
+			}
+
+		if (options[i].longOption)
+			for (j=0;j<a->numOptions;j++) {
+				if ((i != j) && (options[i].longOption))
+					if (strcmp(options[i].longOption, options[j].longOption) == 0) {
+						fprintf(stderr,"duplicate long option, entry number %d, (%s)\n",i,options[i].longOption);
+						exit(1);
+					}
+			}
+	}
+
 	return a;
 }
 
@@ -99,7 +122,7 @@ void argParse_showHelpOption (argParse_handleT *a, const struct argParse_optionT
 	char shortTxt[5];
 	int hasShort;
 
-	snprintf(fmt,sizeof(fmt),"%%-%ds %%s\n",a->helpCol0Size);
+	snprintf(fmt,sizeof(fmt),"%%-%ds %%s",a->helpCol0Size);
 
 	strcpy(st,"  ");
 	hasShort = 0;
@@ -116,6 +139,13 @@ void argParse_showHelpOption (argParse_handleT *a, const struct argParse_optionT
 		else if (option->argRequired == ARG_REQ) strcat(st,"=");
 	}
 	printf(fmt,st,option->help);
+	if (option->showDefValue) {
+		if (option->strValue) {
+			if (*option->strValue) printf(" (%s)",*option->strValue);
+		} else
+		if (option->intValue) printf(" (%d)",*option->intValue);
+	}
+	printf("\n");
 }
 
 
