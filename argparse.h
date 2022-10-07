@@ -1,6 +1,11 @@
 #ifndef ARGPARSE_H
 #define ARGPARSE_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 /*
 Argparser that parses short and long options and reads long options
 from a configuration file.
@@ -70,29 +75,38 @@ Dec 20, 2021 Armin:
 #endif
 
 
-#define AP_OPT_INTVAL(shval,short,long,intPtr,help) { shval, OPT_OPT, short, long, ARG_REQ, ARGTYPE_INT, intPtr, NULL, NULL, help },
-#define AP_REQ_INTVAL(shval,short,long,intPtr,help) { shval, OPT_REQ, short, long, ARG_REQ, ARGTYPE_INT, intPtr, NULL, NULL, help },
-#define AP_OPT_INTVALF(shval,short,long,intPtr,help) { shval, OPT_OPT, short, long, ARG_NO, ARGTYPE_INT, intPtr, NULL, NULL, help },
-#define AP_REQ_INTVALF(shval,short,long,intPtr,help) { shval, OPT_REQ, short, long, ARG_NO, ARGTYPE_INT, intPtr, NULL, NULL, help },
-#define AP_OPT_INTVALFO(shval,short,long,intPtr,help) { shval, OPT_OPT, short, long, ARG_OPT, ARGTYPE_INT, intPtr, NULL, NULL, help },
-#define AP_REQ_INTVALFO(shval,short,long,intPtr,help) { shval, OPT_REQ, short, long, ARG_OPT, ARGTYPE_INT, intPtr, NULL, NULL, help },
-#define AP_OPT_STRVAL(shval,short,long,strPtr,help) { shval, OPT_OPT, short, long, ARG_REQ, ARGTYPE_STR, NULL, strPtr, NULL, help },
-#define AP_REQ_STRVAL(shval,short,long,strPtr,help) { shval, OPT_REQ, short, long, ARG_REQ, ARGTYPE_STR, NULL, strPtr, NULL, help },
+#define AP_OPT_INTVAL(shval,short,long,intPtr,help) { shval, OPT_OPT, short, (char *)long, ARG_REQ, ARGTYPE_INT, intPtr, NULL, NULL, (char *)help },
+#define AP_REQ_INTVAL(shval,short,long,intPtr,help) { shval, OPT_REQ, short, (char *)long, ARG_REQ, ARGTYPE_INT, intPtr, NULL, NULL, (char *)help },
+#define AP_OPT_INTVALF(shval,short,long,intPtr,help) { shval, OPT_OPT, short, (char *)long, ARG_NO, ARGTYPE_INT, intPtr, NULL, NULL, (char *)help },
+#define AP_REQ_INTVALF(shval,short,long,intPtr,help) { shval, OPT_REQ, short, (char *)long, ARG_NO, ARGTYPE_INT, intPtr, NULL, NULL, (char *)help },
+#define AP_OPT_INTVALFO(shval,short,long,intPtr,help) { shval, OPT_OPT, short, (char *)long, ARG_OPT, ARGTYPE_INT, intPtr, NULL, NULL, (char *)help },
+#define AP_REQ_INTVALFO(shval,short,long,intPtr,help) { shval, OPT_REQ, short, (char *)long, ARG_OPT, ARGTYPE_INT, intPtr, NULL, NULL, (char *)help },
+#define AP_OPT_STRVAL(shval,short,long,strPtr,help) { shval, OPT_OPT, short, (char *)long, ARG_REQ, ARGTYPE_STR, NULL, strPtr, NULL, (char *)help },
+#define AP_REQ_STRVAL(shval,short,long,strPtr,help) { shval, OPT_REQ, short, (char *)long, ARG_REQ, ARGTYPE_STR, NULL, strPtr, NULL, (char *)help },
 
-#define AP_OPT_INTVAL_CB(shval,short,long,intPtr,help,cb) { shval, OPT_OPT, short, long, ARG_REQ, ARGTYPE_INT, intPtr, NULL, cb, help },
-#define AP_REQ_INTVAL_CB(shval,short,long,intPtr,help,cb) { shval, OPT_REQ, short, long, ARG_REQ, ARGTYPE_INT, intPtr, NULL, cb, help },
-#define AP_OPT_INTVALF_CB(shval,short,long,intPtr,help,cb) { shval, OPT_OPT, short, long, ARG_NO, ARGTYPE_INT, intPtr, NULL, cb, help },
-#define AP_REQ_INTVALF_CB(shval,short,long,intPtr,help,cb) { shval, OPT_REQ, short, long, ARG_NO, ARGTYPE_INT, intPtr, NULL, cb, help },
-#define AP_OPT_INTVALFO_CB(shval,short,long,intPtr,help,cb) { shval, OPT_OPT, short, long, ARG_OPT, ARGTYPE_INT, intPtr, NULL, cb, help },
-#define AP_REQ_INTVALFO_CB(shval,short,long,intPtr,help,cb) { shval, OPT_REQ, short, long, ARG_OPT, ARGTYPE_INT, intPtr, NULL, cb, help },
-#define AP_OPT_STRVAL_CB(shval,short,long,strPtr,help,cb) { shval, OPT_OPT, short, long, ARG_REQ, ARGTYPE_STR, NULL, strPtr, cb, help },
-#define AP_REQ_STRVAL_CB(shval,short,long,strPtr,help,cb) { shval, OPT_REQ, short, long, ARG_REQ, ARGTYPE_STR, NULL, strPtr, cb, help },
+#define AP_OPT_INTVAL_CB(shval,short,long,intPtr,help,cb) { shval, OPT_OPT, short, (char *)long, ARG_REQ, ARGTYPE_INT, intPtr, NULL, cb, (char *)help },
+#define AP_REQ_INTVAL_CB(shval,short,long,intPtr,help,cb) { shval, OPT_REQ, short, (char *)long, ARG_REQ, ARGTYPE_INT, intPtr, NULL, cb, (char *)help },
+#define AP_OPT_INTVALF_CB(shval,short,long,intPtr,help,cb) { shval, OPT_OPT, short, (char *)long, ARG_NO, ARGTYPE_INT, intPtr, NULL, cb, (char *)help },
+#define AP_REQ_INTVALF_CB(shval,short,long,intPtr,help,cb) { shval, OPT_REQ, short, (char *)long, ARG_NO, ARGTYPE_INT, intPtr, NULL, cb, (char *)help },
+#define AP_OPT_INTVALFO_CB(shval,short,long,intPtr,help,cb) { shval, OPT_OPT, short, (char *)long, ARG_OPT, ARGTYPE_INT, intPtr, NULL, cb, (char *)help },
+#define AP_REQ_INTVALFO_CB(shval,short,long,intPtr,help,cb) { shval, OPT_REQ, short, (char *)long, ARG_OPT, ARGTYPE_INT, intPtr, NULL, cb, (char *)help },
+#define AP_OPT_STRVAL_CB(shval,short,long,strPtr,help,cb) { shval, OPT_OPT, short, (char *)long, ARG_REQ, ARGTYPE_STR, NULL, strPtr, cb, (char *)help },
+#define AP_REQ_STRVAL_CB(shval,short,long,strPtr,help,cb) { shval, OPT_REQ, short, (char *)long, ARG_REQ, ARGTYPE_STR, NULL, strPtr, cb, (char *)help },
 
 #define AP_START(STRUCTNAME) struct argParse_optionT STRUCTNAME[] = {
-#define AP_END { 0, OPT_OPT, -1,NULL,ARG_NO,ARGTYPE_NONE,NULL,NULL,NULL }}
-#define AP_HELP { 0, OPT_OPT, 'h', "help" , ARG_NO , ARGTYPE_NONE, NULL, NULL, &argParse_showHelp, "show this help and exit" },
-
-
+#define AP_END  { 0, OPT_OPT, -1 , NULL              ,ARG_NO,ARGTYPE_NONE,NULL,NULL, NULL              , (char *) NULL }}
+#define AP_HELP { 0, OPT_OPT, 'h', (char *)"help"    ,ARG_NO,ARGTYPE_NONE,NULL,NULL, &argParse_showHelp, (char *) "show this help and exit" },
+/*
+	int showDefValue;
+	argParse_optT optReqired;	// required or optional option
+	int shortOption;			// short option if > ' ' && < 256 else index (-1 = end of list)
+	char *longOption;
+	argParse_argT argRequired;	// do we require an argument or is the argument optional ?
+	argParse_typeT argType;
+	int *intValue;				// pointer to integer, arg only increments or for arg with value
+	char **strValue;			// pointer to a string pointer, will be freed before changed
+	argParse_callbackT *cb;		// function that will be called
+	char *help;					// help text for usage */
 
 /**
  * struct to be used as s single linked list for storing optional args.
@@ -161,7 +175,7 @@ struct argParse_optionT {
  * @param helpBottom text will be shown after the options of the help output
  * helpTop and helpBottom are optional for showing help (may be NULL)
  */
-argParse_handleT * argParse_init(const struct argParse_optionT *options, char *confFileName, char *helpTop, char *helpBottom);
+argParse_handleT * argParse_init(const struct argParse_optionT *options, const char *confFileName, const char *helpTop, const char *helpBottom);
 
 /**
  * This function free's all used memory by the arg parser as well as the handle itself
@@ -211,6 +225,10 @@ char *readLineFromFile(FILE *file);
 
 #if defined(__cplusplus)
  }
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 

@@ -38,7 +38,7 @@ Dec 26, 2021 Armin: Check for duplicate options
 
 #define MAX_LINE_LEN 256
 
-argParse_handleT * argParse_init(const struct argParse_optionT *options, char *confFileName, char *helpTop, char *helpBottom) {
+argParse_handleT * argParse_init(const struct argParse_optionT *options, const char *confFileName, const char *helpTop, const char *helpBottom) {
 	int i,j;
 	int size;
 	argParse_handleT *a = calloc(1,sizeof(argParse_handleT));
@@ -258,6 +258,7 @@ int argParse_handleValue (argParse_handleT *a, char *arg, const struct argParse_
 		if(option->strValue) {				// do we have a pointer to the destination string pointer ?
 			free(*(option->strValue));
 			*option->strValue = strdup(arg);
+			//printf("Option: %s, len:%ld\n",arg,strlen(arg));
 			valueSet++;
 		}
 	} else
